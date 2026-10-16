@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="application.Controller"
+      spacing="10">
+    <children>
+    <ScrollPane id="firstScrollPane" fitToWidth="true" fitToHeight="true" HBox.hgrow="ALWAYS">
+    <!-- Syöttökomponentit vasemmalla -->
+    <VBox spacing="10" minWidth="200" prefWidth="200">
+    <children>
+        <Label text="Lisää uusi kisa" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <TextField fx:id="kisaNimiField" promptText="Kisan nimi"/>
+        <TextField fx:id="alkupvmField" promptText="Alkupvm (YYYY-MM-DD)"/>
+        <TextField fx:id="loppupvmField" promptText="Loppupvm (YYYY-MM-DD)"/>
+        <Button text="Lisää kisa" onAction="#lisaaKisa"/>
+
+        <Label text="Lisää uusi ottelu" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <ComboBox fx:id="kisaComboBox" promptText="Valitse kisa"/>
+        <TextField fx:id="kotijoukkueField" promptText="Kotijoukkue"/>
+        <TextField fx:id="vierasjoukkueField" promptText="Vierasjoukkue"/>
+        <TextField fx:id="kotimaalitField" promptText="Kotimaalit"/>
+        <TextField fx:id="vierasmaalitField" promptText="Vierasmaalit"/>
+        <Button text="Lisää ottelu" onAction="#lisaaOttelu"/>
+
+        <Label text="Lisää uusi osallistuja" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <TextField fx:id="osallistujaField" promptText="Osallistujan nimi"/>
+        <Button text="Lisää osallistuja" onAction="#lisaaOsallistuja"/>
+
+        <Label text="Lisää uusi veikkaus" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <ComboBox fx:id="osallistujaComboBox" promptText="Valitse osallistuja"/>
+        <ComboBox fx:id="otteluComboBox" promptText="Valitse ottelu"/>
+        <TextField fx:id="kotimaalitveikkausField" promptText="Kotipisteet (veikkaus)"/>
+        <TextField fx:id="vierasmaalitveikkausField" promptText="Vieraspisteet (veikkaus)"/>
+        <Button text="Lisää veikkaus" onAction="#lisaaVeikkaus"/>
+    </children>
+    </VBox>
+    </ScrollPane>
+
+    <!-- Olemassa olevien tietojen komponenttien taulut keskellä -->
+    <ScrollPane id="secondScrollPane" fitToWidth="true" fitToHeight="true">
+    <VBox spacing="10" minWidth="100">
+    <children>
+        <Label text="" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Kisat" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Button id="deleteButton" text="Poista kisa" onAction="#handlePoistaKisa" />
+                </HBox>
+            </graphic>
+        </Label>
+        <TableView fx:id="kisatTable">
+            <columns>
+                <TableColumn text="Nimi" fx:id="kisaNimiColumn"/>
+                <TableColumn text="Alkupvm" fx:id="alkupvmColumn"/>
+                <TableColumn text="Loppupvm" fx:id="loppupvmColumn"/>
+            </columns>
+        </TableView>
+
+        <Label text="" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Ottelut" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Button id="deleteButton" text="Poista ottelu" onAction="#handlePoistaOttelu" />
+                </HBox>
+            </graphic>
+        </Label>
+        <TableView fx:id="ottelutTable">
+            <columns>
+                <TableColumn text="Kisa" fx:id="otteluKisaColumn"/>
+                <TableColumn text="Kotijoukkue" fx:id="kotijoukkueColumn"/>
+                <TableColumn text="Vierasjoukkue" fx:id="vierasjoukkueColumn"/>
+                <TableColumn text="Kotipisteet" fx:id="kotimaalitColumn"/>
+                <TableColumn text="Vieraspisteet" fx:id="vierasmaalitColumn"/>
+            </columns>
+        </TableView>
+
+        <Label text="" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Osallistujat" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Button id="deleteButton" text="Poista osallistuja" onAction="#handlePoistaOsallistuja" />
+                </HBox>
+            </graphic>
+        </Label>
+        <TableView fx:id="osallistujatTable">
+            <columns>
+                <TableColumn text="Nimi" fx:id="osallistujaNimiColumn"/>
+            </columns>
+        </TableView>
+
+        <Label text="" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Veikkaukset" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Button id="deleteButton" text="Poista veikkaus" onAction="#handlePoistaVeikkaus" />
+                </HBox>
+            </graphic>
+        </Label>
+        <TableView fx:id="veikkauksetTable">
+            <columns>
+                <TableColumn text="Osallistuja" fx:id="veikkausOsallistujaColumn"/>
+                <TableColumn text="Ottelu" fx:id="veikkausOtteluColumn"/>
+                <TableColumn text="Kotipisteet veikkaus" fx:id="kotimaalitVeikkausColumn"/>
+                <TableColumn text="Vieraspisteet veikkaus" fx:id="vierasmaalitVeikkausColumn"/>
+            </columns>
+        </TableView>
+
+        <Button text="Päivitä tiedot" onAction="#paivitaTiedot"/>
+    </children>
+    </VBox>
+    </ScrollPane>
+
+    <!-- Käynnissä olevien ja menneiden kisojen pistetaulut oikealla -->
+    <ScrollPane id="thirdScrollPane" fitToWidth="true" fitToHeight="true">
+    <VBox spacing="10" minWidth="100">
+    <children>
+        <Label text="" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Pisteet, käynnissä olevat kisat" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <Button id="deleteButton" text="Poista pisteet" onAction="#handlePoistaKaynnissaOleva" />
+                </HBox>
+            </graphic>
+        </Label>
+        <TableView fx:id="kaynnissaOlevatKisatTable">
+            <columns>
+                <TableColumn text="Osallistuja ID" fx:id="kaynnissaOsallistujaIdColumn"/>
+                <TableColumn text="Osallistujan nimi" fx:id="kaynnissaOsallistujanNimiColumn"/>
+                <TableColumn text="Pisteet" fx:id="kaynnissaPisteetColumn"/>
+                <TableColumn fx:id="kaynnissaPisteet1x2Column" text="1X2-pisteet" />
+                <TableColumn fx:id="kaynnissaPisteetLisapisteetColumn" text="Lisäpisteet" />
+            </columns>
+        </TableView>
+
+        <Label text="" style="-fx-font-size: 16px; -fx-font-weight: bold;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Pisteet, menneet kisat" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <Button id="deleteButton" text="Poista pisteet" onAction="#handlePoistaMennyt" />
+                </HBox>
+            </graphic>
+        </Label>
+        <TableView fx:id="menneetKisatTable">
+            <columns>
+                <TableColumn text="Osallistuja ID" fx:id="menneetOsallistujaIdColumn"/>
+                <TableColumn text="Osallistujan nimi" fx:id="menneetOsallistujanNimiColumn"/>
+                <TableColumn text="Pisteet" fx:id="menneetPisteetColumn"/>
+                <TableColumn fx:id="menneetPisteet1x2Column" text="1X2-pisteet" />
+                <TableColumn fx:id="menneetPisteetLisapisteetColumn" text="Lisäpisteet" />
+            </columns>
+        </TableView>
+
+    </children>
+    </VBox>
+    </ScrollPane>
+
+</children>
+</HBox>
